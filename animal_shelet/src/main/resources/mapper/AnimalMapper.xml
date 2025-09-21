@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.AnimalMapper">
+    <insert id="insertAnimalProfile">
+        INSERT INTO animal_profiles (shelter_id, name, species, breed,gender,age,health_status,description,image_url,status,created_at)
+        VALUES (#{shelterId}, #{animalname}, #{species}, #{breed},#{gender},#{age},#{healthStatus},#{description},#{imgUrl},0,NOW());
+    </insert>
+
+    <select id="getAllAnimalList_record" resultMap="AnimalProfileResultMap">
+        SELECT
+            ap.id,
+            ap.shelter_id AS shelterId,
+            ap.name,
+            ap.species,
+            ap.breed,
+            ap.gender,
+            ap.age,
+            ap.health_status AS healthStatus,
+            ap.description,
+            ap.image_url AS imageUrl,
+            ap.status,
+            CASE
+                WHEN ap.status = 0 THEN '待审核'
+                WHEN ap.status = 1 THEN '可领养'
+                WHEN ap.status = 2 THEN '已领养'
+                WHEN ap.status = 3 THEN '审核不通过'
+                ELSE '未知状态'
+                END AS status_str,
+            ap.created_at AS createdAt,
+            ap.updated_at AS updatedAt,
+            s.shelter_name AS shelterName,
+            s.contact_person AS contactPerson
+        FROM
+            animal_profiles ap
+                JOIN
+            shelters s ON ap.shelter_id = s.id;
+    </select>
+    <select id="getPageAnimals" resultMap="AnimalProfileResultMap">
+        SELECT
+            ap.id,
+            ap.shelter_id AS shelterId,
+            ap.name,
+            ap.species,
+            ap.breed,
+            ap.gender,
+            ap.age,
+            ap.health_status AS healthStatus,
+            ap.description,
+            ap.image_url AS imageUrl,
+            ap.status,
+            CASE
+                WHEN ap.status = 0 THEN '待审核'
+                WHEN ap.status = 1 THEN '可领养'
+                WHEN ap.status = 2 THEN '已领养'
+                WHEN ap.status = 3 THEN '审核不通过'
+                ELSE '未知状态'
+                END AS status_str,
+            ap.created_at AS createdAt,
+            ap.updated_at AS updatedAt,
+            s.shelter_name AS shelterName,
+            s.contact_person AS contactPerson
+        FROM
+            animal_profiles ap
+                JOIN
+            shelters s ON ap.shelter_id = s.id
+        LIMIT #{offset}, #{limit}
+    </select>
+    <select id="selectShelter" resultType="com.example.animal_shelet.pojo.Animal.shelter">
+        SELECT * FROM `shelters` WHERE
+            id = #{userId}
+    </select>
+
+    <!-- 定义 resultMap -->
+    <resultMap id="AnimalProfileResultMap" type="com.example.animal_shelet.pojo.Animal.AnimalProfile">
+        <id property="id" column="id"/>
+        <result property="shelterId" column="shelterId"/>
+        <result property="name" column="name"/>
+        <result property="species" column="species"/>
+        <result property="breed" column="breed"/>
+        <result property="gender" column="gender"/>
+        <result property="age" column="age"/>
+
+        <!-- 强制指定这两个字段为 String 类型 -->
+        <result property="healthStatus" column="healthStatus" javaType="string"/>
+        <result property="status_str" column="status_str" javaType="string"/>
+
+        <result property="description" column="description"/>
+        <result property="imageUrl" column="imageUrl"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+        <result property="shelterName" column="shelterName"/>
+        <result property="contactPerson" column="contactPerson"/>
+    </resultMap>
+</mapper>

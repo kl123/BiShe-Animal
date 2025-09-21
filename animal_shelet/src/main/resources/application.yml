@@ -1,0 +1,3 @@
+jwt:
+  interceptor:
+    enabled: true  # 设置为false可禁用

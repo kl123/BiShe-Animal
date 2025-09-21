@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.animal_shelet.mapper.Usermapper">
+    <insert id="register">
+        INSERT INTO users (username, password, phone, email,role_id,created_at)
+        VALUES (#{username}, #{password}, #{phone}, #{email},2,NOW());
+    </insert>
+    <!-- 查询 -->
+    <select id="selectAll" resultType="com.example.animal_shelet.pojo.User.User">
+        SELECT * FROM `users`
+    </select>
+
+    <select id="getPageuser" resultType="com.example.animal_shelet.pojo.User.User">
+        SELECT * FROM `users`
+                          LIMIT #{offset}, #{limit}
+
+    </select>
+
+    <select id="checklogin" resultType="com.example.animal_shelet.pojo.User.User">
+        SELECT * FROM `users` WHERE
+            username = #{username} AND password = #{password}
+    </select>
+    <select id="countByUsername" resultType="java.lang.Integer">
+        SELECT COUNT(*) > 0 AS is_exists
+        FROM users
+        WHERE username = #{username};
+    </select>
+    <select id="countByPhone" resultType="java.lang.Integer">
+        SELECT COUNT(*) > 0 AS is_exists
+        FROM users
+        WHERE phone = #{phone};
+    </select>
+</mapper>
