@@ -19,7 +19,7 @@ public class JWTInterceptors implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Map<String,Object> map = new HashMap<>();
         // 获取请求头中令牌
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("token");
         if (token == null){
             log.error("令牌为空");
             map.put("msg","令牌为空!");

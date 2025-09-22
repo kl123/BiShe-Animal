@@ -4,8 +4,30 @@
 <mapper namespace="com.example.animal_shelet.mapper.AnimalMapper">
     <insert id="insertAnimalProfile">
         INSERT INTO animal_profiles (shelter_id, name, species, breed,gender,age,health_status,description,image_url,status,created_at)
-        VALUES (#{shelterId}, #{animalname}, #{species}, #{breed},#{gender},#{age},#{healthStatus},#{description},#{imgUrl},0,NOW());
+        VALUES (#{shelterId}, #{animalname}, #{species}, #{breed},#{gender},#{age},#{healthStatus},#{description},#{imageUrl},0,NOW());
     </insert>
+    <insert id="interAuditRecords">
+        INSERT INTO audit_records (admin_id, target_type, target_id, action, reason, audit_time)
+        VALUES (#{adminId}, #{targetType}, #{targetId}, #{action}, #{reason}, NOW());
+    </insert>
+
+    <update id="updateAnimalStatus">
+        UPDATE animal_profiles
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="species != null">species = #{species},</if>
+            <if test="breed != null">breed = #{breed},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="healthStatus != null">health_status = #{healthStatus},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="status != null">status = #{status},</if>
+            updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
 
     <select id="getAllAnimalList_record" resultMap="AnimalProfileResultMap">
         SELECT
@@ -83,7 +105,7 @@
 
         <!-- 强制指定这两个字段为 String 类型 -->
         <result property="healthStatus" column="healthStatus" javaType="string"/>
-        <result property="status_str" column="status_str" javaType="string"/>
+        <result property="statusStr" column="status_str" javaType="string"/>
 
         <result property="description" column="description"/>
         <result property="imageUrl" column="imageUrl"/>

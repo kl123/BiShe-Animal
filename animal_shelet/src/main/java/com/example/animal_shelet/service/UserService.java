@@ -4,10 +4,13 @@ import com.example.animal_shelet.pojo.User.User;
 import com.example.animal_shelet.mapper.Usermapper;
 import com.example.animal_shelet.pojo.User.PageUser;
 import com.example.animal_shelet.pojo.result.Result;
+import com.example.animal_shelet.utils.jwt.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -28,11 +31,10 @@ public class UserService {
 
     public Result checklogin(String username, String password) {
         //直接查表
-        List<User> user = userMapper.checklogin(username,password);
-        if (user.size()>0){
+        List<User> userList = userMapper.checklogin(username,password);
+        if (userList.size()>0){
             //成功查询到用户,可以进行登录
-            int identity = user.get(0).getRoleId();
-            int userid = user.get(0).getId();
+            int identity = userList.get(0).getRoleId();
             String identity_str = "";
             switch (identity){
                 case 1:
@@ -44,11 +46,14 @@ public class UserService {
                 default:
                     System.out.println("错误...");
                     System.out.println( identity);
-                    System.out.println(user);
+                    System.out.println(userList);
                     break;
             }
+            User user = userList.get(0);
+            Map<String, String> claims = getStringStringMap(user);
+            String token = JWTUtils.getToken(claims);
             Result result = Result.success();
-            result.setData(userid);
+            result.setData(token);
             result.setMsg(identity_str);
             return result;
         }else {
@@ -56,6 +61,22 @@ public class UserService {
             return result;
         }
 
+    }
+
+    /**
+     * 一个方法，将user中的内容转换入Map<String,String> claims 中 ，便于token生成
+     * @param user
+     * @return
+     */
+    private Map<String, String> getStringStringMap(User user) {
+        Map<String, String> claims = new HashMap<>();
+        claims.put("username", user.getUsername());
+        claims.put("password", user.getPassword());
+        claims.put("userId", String.valueOf(user.getId()));
+        claims.put("Email", user.getEmail());
+        claims.put("phone", user.getPhone());
+        claims.put("roleId", String.valueOf(user.getRoleId()));
+        return claims;
     }
 
     public Result register(String username, String phone, String password, String email) {

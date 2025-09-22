@@ -1,12 +1,16 @@
 package com.example.animal_shelet.service;
 
 import com.example.animal_shelet.mapper.AnimalMapper;
+import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
+import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.pojo.Animal.shelter;
 import com.example.animal_shelet.pojo.Animal.PageAnimal;
+import com.example.animal_shelet.utils.jwt.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,5 +47,40 @@ public class AnimalService {
         int result = animalMapper.insertAnimalProfile(shelterId,animalName,species,breed,gender,age,healthStatus,description,imgUrl);
         System.out.println("发布申请插入结果"+result);
         return result;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Result approvalReleaseAnimalStatus(AuditRecords_and_AnimalProfile auditRecords_and_animalProfile, String token) {
+        String userId = JWTUtils.getTokenInfo(token).get("userId");
+        String roleId = JWTUtils.getTokenInfo(token).get("roleId");
+        if ("1".equals(roleId)){
+            AnimalProfile animalProfile = auditRecords_and_animalProfile.getAnimalProfile();
+            AuditRecords auditRecords = auditRecords_and_animalProfile.getAuditRecords();
+            //更新动物状态
+            animalMapper.updateAnimalStatus(animalProfile);
+            //插入审核记录
+            extracted(userId, animalProfile, auditRecords);
+            animalMapper.interAuditRecords(auditRecords);
+            return Result.success();
+        }else {
+            return Result.error("权限不足");
+         }
+
+    }
+
+    /**
+     * 插入审核记录前的参数准备
+     * @param userId
+     * @param animalProfile
+     * @param auditRecords
+     */
+    private void extracted(String userId, AnimalProfile animalProfile, AuditRecords auditRecords) {
+        auditRecords.setAdminId(Integer.valueOf(userId));
+        if (animalProfile.getStatus() == 1){
+            auditRecords.setAction(1);
+        }else if (animalProfile.getStatus() == 3){
+            auditRecords.setAction(0);
+        }
+        auditRecords.setTargetType(4);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.animal_shelet.mapper;
 
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
+import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.Animal.shelter;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,4 +19,8 @@ public interface AnimalMapper {
     List<shelter> selectShelter(@Param("userId")int userId);
 
     int insertAnimalProfile(int shelterId, String animalName, String species, String breed, int gender, int age, String healthStatus, String description, String imgUrl);
+
+    void updateAnimalStatus(AnimalProfile animalProfile);
+
+    void interAuditRecords(AuditRecords auditRecords);
 }

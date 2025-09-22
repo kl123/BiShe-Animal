@@ -6,14 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-//微信动物相关接口
+
+/**
+ * 动物记录控制/wechat
+ */
 @RestController("wechatAnimalController")
 public class AnimalController {
     @Autowired
     private AnimalService animalService;
 
-    //资格验证
-    @PostMapping ("check")
+
+    /**
+     * 核验资格
+     * @param Data
+     * @return
+     */
+    @PostMapping ("/check")
     public Result check(@RequestBody Map<String, Object> Data){
         //获取
         int userId = (int)Data.get("userid");
@@ -26,9 +34,13 @@ public class AnimalController {
         }
     }
 
-    @RequestMapping("insert_infor")
-    public Result insertanimal_record(@RequestBody Map<String, Object> Data){
-        //获取
+    /**
+     * 插入动物信息
+     * @param Data
+     * @return
+     */
+    @RequestMapping("/insert_infor")
+    public Result insertAnimal_record(@RequestBody Map<String, Object> Data){
         int shelterId = (int)Data.get("shelterId");
         String Animalname = (String) Data.get("Animalname");
         String species = (String) Data.get("species");

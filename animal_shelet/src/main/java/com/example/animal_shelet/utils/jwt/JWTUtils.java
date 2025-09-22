@@ -52,6 +52,9 @@ public class JWTUtils {
         claims.put("username", verify.getClaim("username").asString());
         claims.put("password", verify.getClaim("password").asString());
         claims.put("userId", verify.getClaim("userId").asString());
+        claims.put("Email", verify.getClaim("Email").asString());
+        claims.put("phone", verify.getClaim("phone").asString());
+        claims.put("roleId", verify.getClaim("roleId").asString());
         return claims;
     }
 

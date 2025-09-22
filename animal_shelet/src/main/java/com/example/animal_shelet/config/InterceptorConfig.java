@@ -1,5 +1,6 @@
-package com.example.animal_shelet.utils.jwt;
+package com.example.animal_shelet.config;
 
+import com.example.animal_shelet.utils.jwt.JWTInterceptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
             logger.info("JWT拦截器已成功部署，开始拦截请求");
             registry.addInterceptor(jwtInterceptors())
                     .addPathPatterns("/**")
-                    .excludePathPatterns("/user/login", "/user/register", "/static/**","/utils/**");
+                    .excludePathPatterns("/login", "/register", "/static/**","/utils/**");
         } else {
             logger.info("JWT拦截器已禁用（通过配置开关）");
         }

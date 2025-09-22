@@ -22,7 +22,7 @@ public class AnimalProfile {
     private String description; // 描述
     private String imageUrl; // 图片路径
     private int status; // 状态（0:待审核, 1:可领养, 2:已领养, 3:审核不通过）
-    private String status_str;
+    private String statusStr;
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
 }

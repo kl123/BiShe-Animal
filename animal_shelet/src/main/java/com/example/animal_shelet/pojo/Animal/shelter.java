@@ -14,4 +14,5 @@ public class shelter {
     private String contact_person;
     private String business_license;
     private String qualification_file;
+    private Integer userId;
 }
