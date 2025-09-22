@@ -1,6 +1,5 @@
 package com.example.animal_shelet.pojo.Animal;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class shelter {
+public class Shelter {
     private int id;
     private String shelter_name;
     private String contact_person;

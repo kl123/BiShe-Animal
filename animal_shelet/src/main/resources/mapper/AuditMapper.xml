@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.AuditMapper">
+    <select id="getApplicationInformation" resultMap="SheltersAndAnimalProfilesResultMap">
+        select
+            s.id as s_id, s.shelter_name as s_shelter_name, s.contact_person as s_contact_person,
+            s.business_license as s_business_license, s.qualification_file as s_qualification_file, s.user_id as s_user_id,
+            ap.id as ap_id, ap.shelter_id as ap_shelter_id, ap.name as ap_name, ap.species as ap_species,
+            ap.breed as ap_breed, ap.gender as ap_gender, ap.age as ap_age, ap.health_status as ap_healthStatus,
+            ap.description as ap_description, ap.image_url as ap_imageUrl, ap.status as ap_status,
+            ap.created_at as ap_createdAt, ap.updated_at as ap_updatedAt
+        from shelters s
+        join animal_profiles ap on ap.shelter_id = s.id
+        where user_id = #{userId} and (ap.status = 1 or ap.status = 2)
+    </select>
+
+    <!-- 建议添加到文件中 -->
+    <resultMap id="ShelterResultMap" type="com.example.animal_shelet.pojo.Animal.Shelter">
+        <id property="id" column="s_id"/>
+        <result property="shelter_name" column="s_shelter_name"/>
+        <result property="contact_person" column="s_contact_person"/>
+        <result property="business_license" column="s_business_license"/>
+        <result property="qualification_file" column="s_qualification_file"/>
+        <result property="userId" column="s_user_id"/>
+    </resultMap>
+
+    <resultMap id="AnimalProfileResultMap" type="com.example.animal_shelet.pojo.Animal.AnimalProfile">
+        <id property="id" column="ap_id"/>
+        <result property="shelterId" column="ap_shelter_id"/>
+        <result property="shelterName" column="ap_shelter_name"/>
+        <result property="contactPerson" column="ap_contact_person"/>
+        <result property="name" column="ap_name"/>
+        <result property="species" column="ap_species"/>
+        <result property="breed" column="ap_breed"/>
+        <result property="gender" column="ap_gender"/>
+        <result property="age" column="ap_age"/>
+        <result property="healthStatus" column="ap_healthStatus"/>
+        <result property="description" column="ap_description"/>
+        <result property="imageUrl" column="ap_imageUrl"/>
+        <result property="status" column="ap_status"/>
+        <result property="statusStr" column="ap_statusStr"/>
+        <result property="createdAt" column="ap_createdAt"/>
+        <result property="updatedAt" column="ap_updatedAt"/>
+    </resultMap>
+
+    <resultMap id="SheltersAndAnimalProfilesResultMap" type="com.example.animal_shelet.pojo.Animal.And.Shelters_and_AnimalProfiles">
+        <association property="shelter" javaType="com.example.animal_shelet.pojo.Animal.Shelter" resultMap="ShelterResultMap"/>
+        <association property="animalProfile" javaType="com.example.animal_shelet.pojo.Animal.AnimalProfile" resultMap="AnimalProfileResultMap"/>
+    </resultMap>
+
+
+</mapper>

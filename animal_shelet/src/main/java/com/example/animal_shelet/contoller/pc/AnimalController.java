@@ -1,4 +1,4 @@
-package com.example.animal_shelet.contoller.pc.Animal;
+package com.example.animal_shelet.contoller.pc;
 
 import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;

@@ -1,4 +1,4 @@
-package com.example.animal_shelet.contoller.wechat.Animal;
+package com.example.animal_shelet.contoller.wechat;
 
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.AnimalService;

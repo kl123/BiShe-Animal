@@ -88,10 +88,12 @@
             shelters s ON ap.shelter_id = s.id
         LIMIT #{offset}, #{limit}
     </select>
-    <select id="selectShelter" resultType="com.example.animal_shelet.pojo.Animal.shelter">
+    <select id="selectShelter" resultType="com.example.animal_shelet.pojo.Animal.Shelter">
         SELECT * FROM `shelters` WHERE
             id = #{userId}
+
     </select>
+
 
     <!-- 定义 resultMap -->
     <resultMap id="AnimalProfileResultMap" type="com.example.animal_shelet.pojo.Animal.AnimalProfile">

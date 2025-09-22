@@ -5,7 +5,7 @@ import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.result.Result;
-import com.example.animal_shelet.pojo.Animal.shelter;
+import com.example.animal_shelet.pojo.Animal.Shelter;
 import com.example.animal_shelet.pojo.Animal.PageAnimal;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class AnimalService {
     }
 
     public int check(int userId) {
-        List<shelter> shelters = animalMapper.selectShelter(userId);
+        List<Shelter> shelters = animalMapper.selectShelter(userId);
         System.out.println("查询到:"+shelters);
         if (shelters.size()>0){
             return 1;
