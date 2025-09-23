@@ -57,7 +57,7 @@ public class AnimalService {
             AnimalProfile animalProfile = auditRecords_and_animalProfile.getAnimalProfile();
             AuditRecords auditRecords = auditRecords_and_animalProfile.getAuditRecords();
             //更新动物状态
-            animalMapper.updateAnimalStatus(animalProfile);
+            animalMapper.updateAnimalProfiles(animalProfile);
             //插入审核记录
             extracted(userId, animalProfile, auditRecords);
             animalMapper.interAuditRecords(auditRecords);

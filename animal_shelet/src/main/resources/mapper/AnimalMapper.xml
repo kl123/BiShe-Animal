@@ -11,7 +11,7 @@
         VALUES (#{adminId}, #{targetType}, #{targetId}, #{action}, #{reason}, NOW());
     </insert>
 
-    <update id="updateAnimalStatus">
+    <update id="updateAnimalProfiles">
         UPDATE animal_profiles
         <set>
             <if test="name != null">name = #{name},</if>
@@ -26,6 +26,11 @@
             updated_at = NOW()
         </set>
         WHERE id = #{id}
+    </update>
+    <update id="updateAnimalProfilesStatus">
+        UPDATE animal_profiles
+        SET status = #{status}
+        WHERE id = #{animalId}
     </update>
 
 

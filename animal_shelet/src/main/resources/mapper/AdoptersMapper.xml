@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.AdoptersMapper">
+
+    <insert id="insertAdoptionApplications">
+        INSERT INTO adoption_applications (adopter_id, animal_id, application_date, status, feedback, completion_date)
+        VALUES (#{userId}, #{animalId}, NOW(), 0, null, null);
+    </insert>
+</mapper>
