@@ -14,6 +14,10 @@
         join animal_profiles ap on ap.shelter_id = s.id
         where user_id = #{userId} and (ap.status = 1 or ap.status = 2)
     </select>
+    <select id="getAuditRecords" resultType="com.example.animal_shelet.pojo.Animal.AuditRecords">
+        select * from audit_records
+        where admin_id = #{userId}
+    </select>
 
     <!-- 建议添加到文件中 -->
     <resultMap id="ShelterResultMap" type="com.example.animal_shelet.pojo.Animal.Shelter">
@@ -33,13 +37,12 @@
         <result property="name" column="ap_name"/>
         <result property="species" column="ap_species"/>
         <result property="breed" column="ap_breed"/>
-        <result property="gender" column="ap_gender"/>
+        <result property="genderStr" column="ap_gender" typeHandler="com.example.animal_shelet.TypeHandler.StringTypeHandler"/>
         <result property="age" column="ap_age"/>
         <result property="healthStatus" column="ap_healthStatus"/>
         <result property="description" column="ap_description"/>
         <result property="imageUrl" column="ap_imageUrl"/>
-        <result property="status" column="ap_status"/>
-        <result property="statusStr" column="ap_statusStr"/>
+        <result property="statusStr" column="ap_status" typeHandler="com.example.animal_shelet.TypeHandler.StringTypeHandler"/>
         <result property="createdAt" column="ap_createdAt"/>
         <result property="updatedAt" column="ap_updatedAt"/>
     </resultMap>

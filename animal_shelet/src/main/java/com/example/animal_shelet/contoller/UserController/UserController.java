@@ -1,8 +1,14 @@
 package com.example.animal_shelet.contoller.UserController;
 
+import com.example.animal_shelet.pojo.User.User;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.UserService;
 import com.example.animal_shelet.utils.AliOSSUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -25,6 +31,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class getAllUsers_userPageLimit{
+        private int page;
+        private int limit;
+        private User user;
+    }
+
     /**
      * 登录接口
      * @param loginData
@@ -39,17 +54,17 @@ public class UserController {
     }
 
     /**
-     * 分页查询用户,传参数当前页面,每页数目
+     * 分页可条件查询用户,传参数当前页面,每页数目
      * @param Data
      * @return
      */
     @PostMapping("/getusers")
-    public Result getAllUsers(@RequestBody Map<String, Object> Data){
-        int page = (int) Data.get("page");
-        int limit= (int) Data.get("limit");
-        System.out.println(page);
-        System.out.println(limit);
-        return userService.getAllUsers(page,limit);
+    public Result getAllUsers(@RequestBody getAllUsers_userPageLimit Data,HttpServletRequest httpServletRequest){
+        int page = Data.getPage();
+        int limit= Data.getLimit();
+        User user = Data.getUser();
+        String token = httpServletRequest.getHeader("token");
+        return userService.getAllUsers(page,limit,user,token);
     }
 
     /**
@@ -91,5 +106,45 @@ public class UserController {
             return Result.error("上传异常: " + e.getMessage());
         }
     }
+
+
+    /**
+     * 修改用户信息
+     * @param user
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping("/uploadUser")
+    public Result uploadUser(@RequestBody User user, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        return userService.uploadUser(user,token);
+    }
+
+
+    /**
+     * 删除用户
+     * @param user
+     * @param httpServletRequest
+     * @return
+     */
+    @DeleteMapping("/deleteUser")
+    public Result deleteUser(@RequestBody User user, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        return userService.deleteUser(user,token);
+    }
+
+    /**
+     * 批量删除用户
+     * @param userList
+     * @param httpServletRequest
+     * @return
+     */
+    @DeleteMapping("/deleteUserList")
+    public Result deleteUserList(@RequestBody Map<String, List<Integer>> userList, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        return userService.deleteUserList(userList,token);
+    }
+
+
 
 }

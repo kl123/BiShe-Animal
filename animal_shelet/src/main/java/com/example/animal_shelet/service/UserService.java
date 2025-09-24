@@ -17,16 +17,18 @@ public class UserService {
     @Autowired
     private Usermapper userMapper;
 
-    public Result getAllUsers(int page, int limit){
-        int offset = (page - 1) * limit;
-        int total = userMapper.selectAll().size();
-        List<User> users = userMapper.getPageuser(offset,limit);
-        System.out.println(users);
-//        System.out.println("总数目为:"+total);
-        PageUser users_page = new PageUser(users,total);
-//        userMapper.getPageuser(page,limit);
-
-        return Result.success(users_page);
+    public Result getAllUsers(int page, int limit, User user, String token){
+        Map<String,String> map = JWTUtils.getTokenInfo(token);
+        String roleId = map.get("roleId");
+        if (roleId.equals("1")){
+            int offset = (page - 1) * limit;
+            int total = userMapper.selectAll().size();
+            List<User> users = userMapper.getPageuser(offset,limit,user);
+            System.out.println(users);
+            PageUser users_page = new PageUser(users,total);
+            return Result.success(users_page);
+        }
+        else return Result.error("权限不足");
     }
 
     public Result checklogin(String username, String password) {
@@ -93,5 +95,40 @@ public class UserService {
         userMapper.register(username,phone,password,email);
         //这边执行注册成功的逻辑
         return Result.success("注册成功");
+    }
+
+    public Result uploadUser(User user, String token) {
+        Map<String, String> claims = JWTUtils.getTokenInfo(token);
+        String userId = claims.get("userId");
+        userMapper.updateUser(userId,user);
+        return Result.success("修改成功");
+    }
+
+    public Result deleteUser(User user, String token) {
+        Map<String, String> claims = JWTUtils.getTokenInfo(token);
+        String userId = claims.get("userId");
+        String roleId = claims.get("roleId");
+        if (roleId.equals("1")){
+            userMapper.deleteUser(user);
+            return Result.success("删除成功");
+        }else {
+            return Result.error("权限不足");
+        }
+    }
+
+    public Result deleteUserList(Map<String, List<Integer>> userList, String token) {
+        Map<String, String> claims = JWTUtils.getTokenInfo(token);
+        List<Integer> userIdList = userList.get("userIdList");
+        String roleId = claims.get("roleId");
+        if (roleId.equals("1")){
+            for (Integer userId:userIdList) {
+                User user = new User();
+                user.setId(userId);
+                userMapper.deleteUser(user);
+            }
+            return Result.success("删除成功");
+        }else {
+            return Result.error("权限不足");
+        }
     }
 }

@@ -6,10 +6,21 @@
         INSERT INTO animal_profiles (shelter_id, name, species, breed,gender,age,health_status,description,image_url,status,created_at)
         VALUES (#{shelterId}, #{animalname}, #{species}, #{breed},#{gender},#{age},#{healthStatus},#{description},#{imageUrl},0,NOW());
     </insert>
+
     <insert id="interAuditRecords">
-        INSERT INTO audit_records (admin_id, target_type, target_id, action, reason, audit_time)
-        VALUES (#{adminId}, #{targetType}, #{targetId}, #{action}, #{reason}, NOW());
+        INSERT INTO audit_records (admin_id,reason,audit_time,target_id, target_type, action )
+        VALUES (
+            #{adminId},
+            #{reason},
+            #{auditTime},
+            #{targetId},
+            #{targetType, typeHandler=com.example.animal_shelet.TypeHandler.Animal.AuditRecordsTypeHandler.TargetTypeTypeHandler},
+            #{action, typeHandler=com.example.animal_shelet.TypeHandler.Animal.AuditRecordsTypeHandler.ActionTypeHandler}
+
+        )
     </insert>
+
+
 
     <update id="updateAnimalProfiles">
         UPDATE animal_profiles
@@ -17,12 +28,12 @@
             <if test="name != null">name = #{name},</if>
             <if test="species != null">species = #{species},</if>
             <if test="breed != null">breed = #{breed},</if>
-            <if test="gender != null">gender = #{gender},</if>
+            <if test="gender != null">gender = #{gender,com.example.animal_shelet.TypeHandler.Animal.AnimalProfile.GenderTypeHandler},</if>
             <if test="age != null">age = #{age},</if>
             <if test="healthStatus != null">health_status = #{healthStatus},</if>
             <if test="description != null">description = #{description},</if>
             <if test="imageUrl != null">image_url = #{imageUrl},</if>
-            <if test="status != null">status = #{status},</if>
+            <if test="status != null">status = #{status,typeHandler=com.example.animal_shelet.TypeHandler.Animal.AnimalProfile.AnimalStatusTypeHandler},</if>
             updated_at = NOW()
         </set>
         WHERE id = #{id}
@@ -47,13 +58,6 @@
             ap.description,
             ap.image_url AS imageUrl,
             ap.status,
-            CASE
-                WHEN ap.status = 0 THEN '待审核'
-                WHEN ap.status = 1 THEN '可领养'
-                WHEN ap.status = 2 THEN '已领养'
-                WHEN ap.status = 3 THEN '审核不通过'
-                ELSE '未知状态'
-                END AS status_str,
             ap.created_at AS createdAt,
             ap.updated_at AS updatedAt,
             s.shelter_name AS shelterName,
@@ -76,23 +80,57 @@
             ap.description,
             ap.image_url AS imageUrl,
             ap.status,
-            CASE
-                WHEN ap.status = 0 THEN '待审核'
-                WHEN ap.status = 1 THEN '可领养'
-                WHEN ap.status = 2 THEN '已领养'
-                WHEN ap.status = 3 THEN '审核不通过'
-                ELSE '未知状态'
-                END AS status_str,
             ap.created_at AS createdAt,
             ap.updated_at AS updatedAt,
             s.shelter_name AS shelterName,
             s.contact_person AS contactPerson
         FROM
             animal_profiles ap
-                JOIN
-            shelters s ON ap.shelter_id = s.id
+            JOIN shelters s ON ap.shelter_id = s.id
+        <where>
+            <if test="animalProfile.name != null and animalProfile.name != ''">
+                AND ap.name LIKE CONCAT('%', #{animalProfile.name}, '%')
+            </if>
+            <if test="animalProfile.species != null and animalProfile.species != ''">
+                AND ap.species = #{animalProfile.species}
+            </if>
+            <if test="animalProfile.breed != null and animalProfile.breed != ''">
+                AND ap.breed LIKE CONCAT('%', #{animalProfile.breed}, '%')
+            </if>
+            <if test="animalProfile.gender != null">
+                AND ap.gender = #{animalProfile.gender, typeHandler=com.example.animal_shelet.TypeHandler.Animal.AnimalProfile.GenderTypeHandler}
+            </if>
+            <if test="animalProfile.age != null">
+                AND ap.age = #{animalProfile.age}
+            </if>
+            <if test="animalProfile.healthStatus != null and animalProfile.healthStatus != ''">
+                AND ap.health_status = #{animalProfile.healthStatus}
+            </if>
+            <if test="animalProfile.status != null">
+                AND ap.status = #{animalProfile.status, typeHandler=com.example.animal_shelet.TypeHandler.Animal.AnimalProfile.AnimalStatusTypeHandler}
+            </if>
+            <if test="animalProfile.shelterName != null and animalProfile.shelterName != ''">
+                AND s.shelter_name LIKE CONCAT('%', #{animalProfile.shelterName}, '%')
+            </if>
+            <if test="animalProfile.contactPerson != null and animalProfile.contactPerson != ''">
+                AND s.contact_person LIKE CONCAT('%', #{animalProfile.contactPerson}, '%')
+            </if>
+            <!-- 避免空WHERE子句 -->
+            <choose>
+                <when test="animalProfile.name != null or animalProfile.species != null or animalProfile.breed != null or animalProfile.gender != null
+                            or animalProfile.age != null or animalProfile.healthStatus != null or animalProfile.status != null
+                            or animalProfile.shelterName != null or animalProfile.contactPerson != null">
+                    <!-- 已有其他条件 -->
+                </when>
+                <otherwise>
+                    AND 1=1
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY ap.created_at DESC
         LIMIT #{offset}, #{limit}
     </select>
+
     <select id="selectShelter" resultType="com.example.animal_shelet.pojo.Animal.Shelter">
         SELECT * FROM `shelters` WHERE
             id = #{userId}
@@ -107,19 +145,19 @@
         <result property="name" column="name"/>
         <result property="species" column="species"/>
         <result property="breed" column="breed"/>
-        <result property="gender" column="gender"/>
+        <result property="genderStr" column="gender"
+                typeHandler="com.example.animal_shelet.TypeHandler.StringTypeHandler"/>
         <result property="age" column="age"/>
-
-        <!-- 强制指定这两个字段为 String 类型 -->
         <result property="healthStatus" column="healthStatus" javaType="string"/>
-        <result property="statusStr" column="status_str" javaType="string"/>
-
         <result property="description" column="description"/>
         <result property="imageUrl" column="imageUrl"/>
-        <result property="status" column="status"/>
+        <result column="status" property="statusStr"
+                typeHandler="com.example.animal_shelet.TypeHandler.StringTypeHandler"/>
         <result property="createdAt" column="createdAt"/>
         <result property="updatedAt" column="updatedAt"/>
         <result property="shelterName" column="shelterName"/>
         <result property="contactPerson" column="contactPerson"/>
     </resultMap>
+
+
 </mapper>

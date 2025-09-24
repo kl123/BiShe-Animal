@@ -2,18 +2,21 @@ package com.example.animal_shelet.service;
 
 import com.example.animal_shelet.mapper.AnimalMapper;
 import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
+import com.example.animal_shelet.pojo.Animal.And.Shelters_and_AnimalProfiles;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.pojo.Animal.Shelter;
 import com.example.animal_shelet.pojo.Animal.PageAnimal;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class AnimalService {
     @Autowired
@@ -23,12 +26,12 @@ public class AnimalService {
         return Result.success(animalMapper.getAllAnimalList_record());
     }
 
-    public Result getAnimal_bypage(int page, int limit) {
+    public Result getAnimal_bypage(int page, int limit, Shelters_and_AnimalProfiles shelters_and_animalProfiles) {
         int offset = (page - 1) * limit;
         int total = animalMapper.getAllAnimalList_record().size();
-        List<AnimalProfile> animals = animalMapper.getPageAnimals(offset,limit);
-        System.out.println(animals);
-//        System.out.println("总数目为:"+total);
+        Shelter shelter = shelters_and_animalProfiles.getShelter();
+        AnimalProfile animalProfile = shelters_and_animalProfiles.getAnimalProfile();
+        List<Shelters_and_AnimalProfiles> animals = animalMapper.getPageAnimals(offset,limit,shelter,animalProfile);
         PageAnimal animals_page = new PageAnimal(animals,total);
         return Result.success(animals_page);
     }
@@ -58,9 +61,11 @@ public class AnimalService {
             AuditRecords auditRecords = auditRecords_and_animalProfile.getAuditRecords();
             //更新动物状态
             animalMapper.updateAnimalProfiles(animalProfile);
+            log.info("调试参数{}",animalProfile);
             //插入审核记录
             extracted(userId, animalProfile, auditRecords);
             animalMapper.interAuditRecords(auditRecords);
+            log.info("调试参数{}",auditRecords);
             return Result.success();
         }else {
             return Result.error("权限不足");
@@ -76,11 +81,23 @@ public class AnimalService {
      */
     private void extracted(String userId, AnimalProfile animalProfile, AuditRecords auditRecords) {
         auditRecords.setAdminId(Integer.valueOf(userId));
-        if (animalProfile.getStatus() == 1){
-            auditRecords.setAction(1);
-        }else if (animalProfile.getStatus() == 3){
-            auditRecords.setAction(0);
+
+        AnimalProfile.AnimalStatus status = animalProfile.getStatus();
+        if (status == AnimalProfile.AnimalStatus.AVAILABLE) {
+            auditRecords.setAction(AuditRecords.Action.APPROVE);
+        } else if (status == AnimalProfile.AnimalStatus.REJECTED) {
+            auditRecords.setAction(AuditRecords.Action.REJECT);
+        } else {
+            // 添加默认处理，避免action为null
+            auditRecords.setAction(AuditRecords.Action.APPROVE);
         }
-        auditRecords.setTargetType(4);
+
+        auditRecords.setTargetType(AuditRecords.Target.PET_PROFILE);
+
+        // 设置描述字段（用于JSON序列化）
+        auditRecords.setActionStr(auditRecords.getAction().getDescription());
+        auditRecords.setTargetStr(auditRecords.getTargetType().getDescription());
     }
+
+
 }

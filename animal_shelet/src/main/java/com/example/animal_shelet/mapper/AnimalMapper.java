@@ -1,5 +1,6 @@
 package com.example.animal_shelet.mapper;
 
+import com.example.animal_shelet.pojo.Animal.And.Shelters_and_AnimalProfiles;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.Animal.Shelter;
@@ -14,7 +15,6 @@ import java.util.List;
 public interface AnimalMapper {
     List<AnimalProfile> getAllAnimalList_record();
 
-    List<AnimalProfile> getPageAnimals(@Param("offset") int offset, @Param("limit") int limit);
 
     List<Shelter> selectShelter(@Param("userId")int userId);
 
@@ -29,4 +29,5 @@ public interface AnimalMapper {
 
     void interAuditRecords(AuditRecords auditRecords);
 
+    List<Shelters_and_AnimalProfiles> getPageAnimals(int offset, int limit, Shelter shelter, AnimalProfile animalProfile);
 }
