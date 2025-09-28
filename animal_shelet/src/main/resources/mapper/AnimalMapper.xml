@@ -20,9 +20,13 @@
         )
     </insert>
 
+<<<<<<< HEAD
 
 
     <update id="updateAnimalProfiles">
+=======
+    <update id="updateAnimalStatus">
+>>>>>>> parent of 960ec79 (领养申请记录的创建的接口完成，并且修改部分项目结构)
         UPDATE animal_profiles
         <set>
             <if test="name != null">name = #{name},</if>
@@ -37,11 +41,6 @@
             updated_at = NOW()
         </set>
         WHERE id = #{id}
-    </update>
-    <update id="updateAnimalProfilesStatus">
-        UPDATE animal_profiles
-        SET status = #{status}
-        WHERE id = #{animalId}
     </update>
 
 

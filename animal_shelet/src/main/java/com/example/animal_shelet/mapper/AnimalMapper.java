@@ -20,12 +20,7 @@ public interface AnimalMapper {
 
     int insertAnimalProfile(int shelterId, String animalName, String species, String breed, int gender, int age, String healthStatus, String description, String imgUrl);
 
-    void updateAnimalProfiles(AnimalProfile animalProfile);
-
-   void updateAnimalProfilesStatus(
-       @Param("status") Integer status,
-       @Param("animalId") Integer animalId
-   );
+    void updateAnimalStatus(AnimalProfile animalProfile);
 
     void interAuditRecords(AuditRecords auditRecords);
 

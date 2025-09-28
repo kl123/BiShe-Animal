@@ -60,8 +60,12 @@ public class AnimalService {
             AnimalProfile animalProfile = auditRecords_and_animalProfile.getAnimalProfile();
             AuditRecords auditRecords = auditRecords_and_animalProfile.getAuditRecords();
             //更新动物状态
+<<<<<<< HEAD
             animalMapper.updateAnimalProfiles(animalProfile);
             log.info("调试参数{}",animalProfile);
+=======
+            animalMapper.updateAnimalStatus(animalProfile);
+>>>>>>> parent of 960ec79 (领养申请记录的创建的接口完成，并且修改部分项目结构)
             //插入审核记录
             extracted(userId, animalProfile, auditRecords);
             animalMapper.interAuditRecords(auditRecords);
