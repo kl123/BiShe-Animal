@@ -63,7 +63,7 @@
                 JOIN
             shelters s ON ap.shelter_id = s.id;
     </select>
-    <select id="getPageAnimals" resultMap="AnimalProfileResultMap">
+    <select id="getPageAnimals_IsNull" resultMap="AnimalProfileResultMap">
         SELECT
             ap.id,
             ap.shelter_id AS shelterId,
@@ -96,8 +96,51 @@
     <select id="selectShelter" resultType="com.example.animal_shelet.pojo.Animal.Shelter">
         SELECT * FROM `shelters` WHERE
             id = #{userId}
-
     </select>
+
+    <select id="getPageAnimals_NotNull" resultMap="AnimalProfileResultMap">
+        SELECT
+        ap.id,
+        ap.shelter_id AS shelterId,
+        ap.name,
+        ap.species,
+        ap.breed,
+        ap.gender,
+        ap.age,
+        ap.health_status AS healthStatus,
+        ap.description,
+        ap.image_url AS imageUrl,
+        ap.status,
+        CASE
+        WHEN ap.status = 0 THEN '待审核'
+        WHEN ap.status = 1 THEN '可领养'
+        WHEN ap.status = 2 THEN '已领养'
+        WHEN ap.status = 3 THEN '审核不通过'
+        ELSE '未知状态'
+        END AS status_str,
+        ap.created_at AS createdAt,
+        ap.updated_at AS updatedAt,
+        s.shelter_name AS shelterName,
+        s.contact_person AS contactPerson
+        FROM
+        animal_profiles ap
+        JOIN
+        shelters s ON ap.shelter_id = s.id
+        <where>
+            <if test="animalProfile.id != null">
+                AND ap.id = #{animalProfile.id}
+            </if>
+            <if test="animalProfile.shelterName != null">
+                AND s.shelter_name LIKE CONCAT('%', #{animalProfile.shelterName}, '%')
+            </if>
+            <if test="animalProfile.status != null">
+                AND ap.status = #{animalProfile.status}
+            </if>
+        </where>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+
 
 
     <!-- 定义 resultMap -->

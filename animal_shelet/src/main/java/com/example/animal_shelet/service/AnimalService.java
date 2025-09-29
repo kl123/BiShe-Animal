@@ -23,10 +23,15 @@ public class AnimalService {
         return Result.success(animalMapper.getAllAnimalList_record());
     }
 
-    public Result getAnimal_bypage(int page, int limit) {
+    public Result getAnimal_bypage(int page, int limit, AnimalProfile animalProfile) {
         int offset = (page - 1) * limit;
         int total = animalMapper.getAllAnimalList_record().size();
-        List<AnimalProfile> animals = animalMapper.getPageAnimals(offset,limit);
+        List<AnimalProfile> animals;
+        if (animalProfile == null){
+            animals = animalMapper.getPageAnimals_IsNull(offset,limit);
+        }else{
+            animals = animalMapper.getPageAnimals_NotNull(offset,limit,animalProfile);
+        }
         System.out.println(animals);
 //        System.out.println("总数目为:"+total);
         PageAnimal animals_page = new PageAnimal(animals,total);

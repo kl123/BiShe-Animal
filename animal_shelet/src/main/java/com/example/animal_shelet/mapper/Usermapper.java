@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface Usermapper {
 
-    List<User> getPageuser(@Param("offset") int offset, @Param("limit") int limit);
+    List<User> getPageUser_UserNull(@Param("offset") int offset, @Param("limit") int limit);
 
     List<User> checklogin(@Param("username") String username, @Param("password") String password);
 
@@ -22,4 +22,8 @@ public interface Usermapper {
     int countByPhone(String phone);
 
     void register(String username, String phone, String password, String email);
+
+    void deleteUser(String id);
+
+    List<User> getPageUser_UserNotNUll(@Param("offset") int offset, @Param("limit") int limit, @Param("user") User user);
 }

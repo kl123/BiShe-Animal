@@ -1,8 +1,14 @@
 package com.example.animal_shelet.contoller.UserController;
 
+import com.example.animal_shelet.pojo.User.User;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.UserService;
 import com.example.animal_shelet.utils.AliOSSUtils;
+import com.example.animal_shelet.utils.jwt.JWTUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -25,6 +31,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class getAllUsers{
+        private int page;
+        private int limit;
+        private User user;
+    }
+
     /**
      * 登录接口
      * @param loginData
@@ -44,12 +59,13 @@ public class UserController {
      * @return
      */
     @PostMapping("/getusers")
-    public Result getAllUsers(@RequestBody Map<String, Object> Data){
-        int page = (int) Data.get("page");
-        int limit= (int) Data.get("limit");
-        System.out.println(page);
-        System.out.println(limit);
-        return userService.getAllUsers(page,limit);
+    public Result getAllUsers(@RequestBody getAllUsers Data, HttpServletRequest httpServletRequest){
+        int page = Data.getPage();
+        int limit = Data.getLimit();
+        User user = Data.getUser();
+        String token = httpServletRequest.getHeader("token");
+        Map<String,String> map = JWTUtils.getTokenInfo(token);
+        return userService.getAllUsers(page,limit,map,user);
     }
 
     /**
@@ -90,6 +106,28 @@ public class UserController {
         } catch (Exception e) {
             return Result.error("上传异常: " + e.getMessage());
         }
+    }
+
+    /**
+     * 删除用户
+     * @param deleteData
+     * @return
+     */
+    @DeleteMapping("/deleteUser")
+    public Result deleteUser(@RequestBody Map<String,String> deleteData){
+        String Id = deleteData.get("id");
+        return userService.deleteUser(Id);
+    }
+
+    /**
+     * 批量删除用户
+     * @param deleteData
+     * @return
+     */
+    @DeleteMapping("/deleteUserList")
+    public Result deleteUserList(@RequestBody Map<String,List<String>> deleteData){
+        List<String> IdList = deleteData.get("userIdList");
+        return userService.deleteUserList(IdList);
     }
 
 }

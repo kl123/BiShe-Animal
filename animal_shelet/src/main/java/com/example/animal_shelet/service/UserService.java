@@ -17,16 +17,23 @@ public class UserService {
     @Autowired
     private Usermapper userMapper;
 
-    public Result getAllUsers(int page, int limit){
-        int offset = (page - 1) * limit;
-        int total = userMapper.selectAll().size();
-        List<User> users = userMapper.getPageuser(offset,limit);
-        System.out.println(users);
-//        System.out.println("总数目为:"+total);
-        PageUser users_page = new PageUser(users,total);
-//        userMapper.getPageuser(page,limit);
+    public Result getAllUsers(int page, int limit, Map<String, String> map, User user){
+        String roleId = map.get("roleId");
+        if (roleId.equals("1")){
+            int offset = (page - 1) * limit;
+            int total = userMapper.selectAll().size();
+            List<User> users;
+            if (user == null){
+                users = userMapper.getPageUser_UserNull(offset,limit);
+            }else{
+                users = userMapper.getPageUser_UserNotNUll(offset,limit,user);
+            }
+            PageUser users_page = new PageUser(users,total);
+            return Result.success(users_page);
+        }else{
+            return Result.error("权限不足");
+        }
 
-        return Result.success(users_page);
     }
 
     public Result checklogin(String username, String password) {
@@ -93,5 +100,17 @@ public class UserService {
         userMapper.register(username,phone,password,email);
         //这边执行注册成功的逻辑
         return Result.success("注册成功");
+    }
+
+    public Result deleteUser(String id) {
+        userMapper.deleteUser(id);
+        return Result.success("删除成功");
+    }
+
+    public Result deleteUserList(List<String> idList) {
+        for (String id:idList){
+            userMapper.deleteUser(id);
+        }
+        return Result.success("删除成功");
     }
 }

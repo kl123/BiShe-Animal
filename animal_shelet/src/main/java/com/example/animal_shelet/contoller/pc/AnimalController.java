@@ -1,5 +1,6 @@
 package com.example.animal_shelet.contoller.pc;
 
+import com.example.animal_shelet.pojo.Animal.And.AnimalProfiles_and_Shelters;
 import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AuditRecords;
@@ -7,6 +8,9 @@ import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.AnimalService;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +24,16 @@ public class AnimalController {
     @Autowired
     private AnimalService animalService;
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class getAnimalsPage{
+        private int page;
+        private int limit;
+        private AnimalProfile animalProfile;
+    }
+
+
     /**
      * 获取动物记录
      * @return
@@ -30,16 +44,19 @@ public class AnimalController {
     }
 
     /**
-     * 分页获取动物记录
+     * 分页获取动物档案记录
      * @param Data
      * @return
      */
     @PostMapping ("/animalRecord_bypage")
-    public Result getAnimalsPage(@RequestBody Map<String, Object> Data){
-        int page = (int) Data.get("page");
-        int limit= (int) Data.get("limit");
-        return animalService.getAnimal_bypage(page,limit);
+    public Result getAnimalsPage(@RequestBody getAnimalsPage Data){
+        int page = Data.getPage();
+        int limit = Data.getLimit();
+        AnimalProfile animalProfile = Data.getAnimalProfile();
+        return animalService.getAnimal_bypage(page,limit,animalProfile);
     }
+
+
 
     /**
      * 宠物发布状态的审批

@@ -18,7 +18,7 @@
             resultMap="AuditRecords_and_usernameMap">
         select
             *,
-            u.username as u_username
+            u.username as username
         from audit_records ar
         join users u on ar.admin_id = u.id
     </select>
@@ -68,8 +68,8 @@
     </resultMap>
 
     <resultMap id="AuditRecords_and_usernameMap" type="com.example.animal_shelet.pojo.Audit.And.AuditRecords_and_username">
+        <result property="username" column="username"/>
         <association property="auditRecords" javaType="com.example.animal_shelet.pojo.Audit.AuditRecords" resultMap="AuditRecordsResultMap"/>
-        <association property="username" javaType="java.lang.String"/>
     </resultMap>
 
 

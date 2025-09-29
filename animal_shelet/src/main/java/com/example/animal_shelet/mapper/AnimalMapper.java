@@ -14,7 +14,7 @@ import java.util.List;
 public interface AnimalMapper {
     List<AnimalProfile> getAllAnimalList_record();
 
-    List<AnimalProfile> getPageAnimals(@Param("offset") int offset, @Param("limit") int limit);
+    List<AnimalProfile> getPageAnimals_IsNull(@Param("offset") int offset, @Param("limit") int limit);
 
     List<Shelter> selectShelter(@Param("userId")int userId);
 
@@ -29,4 +29,5 @@ public interface AnimalMapper {
 
     void interAuditRecords(AuditRecords auditRecords);
 
+    List<AnimalProfile> getPageAnimals_NotNull(@Param("offset") int offset, @Param("limit") int limit, @Param("animalProfile") AnimalProfile animalProfile);
 }
