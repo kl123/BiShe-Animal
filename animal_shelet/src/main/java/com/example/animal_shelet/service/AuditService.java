@@ -7,8 +7,10 @@ import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.Audit.And.AuditRecords_and_username;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Map;
  * 审核控制
  */
 @Service
+@Slf4j
 public class AuditService {
     @Autowired
     private AuditMapper auditMapper;
@@ -28,10 +31,13 @@ public class AuditService {
         return Result.success(shelters_and_animalProfiles_List_List);
     }
 
+    @Transactional(readOnly = true)
     public Result getAllAuditInfoList(Map<String, String> tokenInfo) {
         String RoleId = tokenInfo.get("roleId");
         if ("1".equals(RoleId)) {
-            List<AuditRecords_and_username> shelters_and_animalProfiles_List_List = auditMapper.getAllAuditInfoList();
+            List<AuditRecords_and_username> shelters_and_animalProfiles_List_List
+                = auditMapper.getAllAuditInfoList();
+            log.info("shelters_and_animalProfiles_List_List:{}", shelters_and_animalProfiles_List_List);
             return Result.success(shelters_and_animalProfiles_List_List);
         } else {
             return Result.error("权限不足");

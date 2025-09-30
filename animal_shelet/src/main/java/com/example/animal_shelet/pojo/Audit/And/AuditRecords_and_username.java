@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class AuditRecords_and_username {
     private AuditRecords auditRecords;
     private String username;
+    private Integer auditRecordsId;
+
 }
