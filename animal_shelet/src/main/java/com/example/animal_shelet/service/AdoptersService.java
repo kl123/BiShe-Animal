@@ -20,8 +20,14 @@ public class AdoptersService {
     public Result insertAdoptionApplications(String token, Integer animalId) {
         Map<String, String> tokenInfo = JWTUtils.getTokenInfo(token);
         String userId = tokenInfo.get("userId");
+        // 乐观锁：尝试将状态从可领养(1)更新为已领养(2)
+        int updated = animalMapper.tryUpdateAnimalProfilesStatus(1, 2, animalId);
+        if (updated == 0) {
+            // 更新失败，说明被其他用户抢先更新
+            return Result.error("该宠物已被其他用户申请，请稍后再试");
+        }
+        // 状态更新成功，插入申请记录（同一事务内，若插入失败将整体回滚）
         adoptersMapper.insertAdoptionApplications(userId, animalId);
-        animalMapper.updateAnimalProfilesStatus(0, animalId);
         return Result.success();
     }
 }

@@ -22,10 +22,19 @@ public interface AnimalMapper {
 
     void updateAnimalProfiles(AnimalProfile animalProfile);
 
-   void updateAnimalProfilesStatus(
+    void updateAnimalProfilesStatus(
        @Param("status") Integer status,
        @Param("animalId") Integer animalId
    );
+
+    /**
+     * 乐观锁更新：当当前状态等于期望状态时，更新为新状态，返回影响行数
+     */
+    int tryUpdateAnimalProfilesStatus(
+        @Param("expectedStatus") Integer expectedStatus,
+        @Param("newStatus") Integer newStatus,
+        @Param("animalId") Integer animalId
+    );
 
     void interAuditRecords(AuditRecords auditRecords);
 

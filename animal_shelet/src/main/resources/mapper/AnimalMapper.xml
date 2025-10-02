@@ -33,6 +33,14 @@
         WHERE id = #{animalId}
     </update>
 
+    <!-- 乐观锁：只有在当前状态等于期望值时才更新为新状态 -->
+    <update id="tryUpdateAnimalProfilesStatus">
+        UPDATE animal_profiles
+        SET status = #{newStatus}
+        WHERE id = #{animalId}
+          AND status = #{expectedStatus}
+    </update>
+
 
     <select id="getAllAnimalList_record" resultMap="AnimalProfileResultMap">
         SELECT
