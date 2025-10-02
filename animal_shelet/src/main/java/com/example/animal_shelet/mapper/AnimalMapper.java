@@ -39,4 +39,9 @@ public interface AnimalMapper {
     void interAuditRecords(AuditRecords auditRecords);
 
     List<AnimalProfile> getPageAnimals_NotNull(@Param("offset") int offset, @Param("limit") int limit, @Param("animalProfile") AnimalProfile animalProfile);
+    
+    /**
+     * 获取所有可领养的动物（状态为1）
+     */
+    List<AnimalProfile> getAvailableAnimals();
 }

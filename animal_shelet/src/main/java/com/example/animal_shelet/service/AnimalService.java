@@ -64,7 +64,7 @@ public class AnimalService {
             //更新动物状态
             animalMapper.updateAnimalProfiles(animalProfile);
             //插入审核记录
-            extracted(userId, animalProfile, auditRecords);
+            prepareAuditRecords(userId, animalProfile, auditRecords);
             animalMapper.interAuditRecords(auditRecords);
             return Result.success();
         }else {
@@ -79,7 +79,7 @@ public class AnimalService {
      * @param animalProfile
      * @param auditRecords
      */
-    private void extracted(String userId, AnimalProfile animalProfile, AuditRecords auditRecords) {
+    private void prepareAuditRecords(String userId, AnimalProfile animalProfile, AuditRecords auditRecords) {
         auditRecords.setAdminId(Integer.valueOf(userId));
         if (animalProfile.getStatus() == 1){
             auditRecords.setAction(1);

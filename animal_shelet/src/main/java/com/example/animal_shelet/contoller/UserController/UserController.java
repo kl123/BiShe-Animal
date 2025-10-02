@@ -1,7 +1,10 @@
 package com.example.animal_shelet.contoller.UserController;
 
+import com.example.animal_shelet.pojo.Animal.AnimalMatchResult;
+import com.example.animal_shelet.pojo.Animal.MatchRequest;
 import com.example.animal_shelet.pojo.User.User;
 import com.example.animal_shelet.pojo.result.Result;
+import com.example.animal_shelet.service.AIMatchService;
 import com.example.animal_shelet.service.UserService;
 import com.example.animal_shelet.utils.AliOSSUtils;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
@@ -30,6 +33,9 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private AIMatchService aiMatchService;
 
     @Data
     @NoArgsConstructor
@@ -128,6 +134,35 @@ public class UserController {
     public Result deleteUserList(@RequestBody Map<String,List<String>> deleteData){
         List<String> IdList = deleteData.get("userIdList");
         return userService.deleteUserList(IdList);
+    }
+
+    /**
+     * 智能匹配动物接口
+     * 通过用户提供的关键词，使用AI大模型筛选出最合适的前5条动物记录
+     * @param matchRequest 匹配请求，包含用户关键词和偏好
+     * @return 匹配结果，包含动物信息和适配百分比
+     */
+    @PostMapping("/intelligentMatch")
+    public Result intelligentMatch(@RequestBody MatchRequest matchRequest) {
+        try {
+            // 验证请求参数
+            if (matchRequest == null || matchRequest.getKeywords() == null || matchRequest.getKeywords().trim().isEmpty()) {
+                return Result.error("关键词不能为空");
+            }
+            
+            // 调用AI匹配服务
+            List<AnimalMatchResult> matchResults = aiMatchService.intelligentMatch(matchRequest);
+            
+            if (matchResults.isEmpty()) {
+                return Result.success(matchResults);
+            }
+            
+            return Result.success(matchResults);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("匹配过程中发生错误: " + e.getMessage());
+        }
     }
 
 }
