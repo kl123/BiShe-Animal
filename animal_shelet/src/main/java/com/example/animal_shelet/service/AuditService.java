@@ -1,10 +1,8 @@
 package com.example.animal_shelet.service;
 
 import com.example.animal_shelet.mapper.AuditMapper;
-import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.And.Shelters_and_AnimalProfiles;
-import com.example.animal_shelet.pojo.Animal.AuditRecords;
-import com.example.animal_shelet.pojo.Audit.And.AuditRecords_and_username;
+import com.example.animal_shelet.pojo.Adopte.Audit.And.AuditRecords_and_username;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
 import lombok.extern.slf4j.Slf4j;

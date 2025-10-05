@@ -1,4 +1,4 @@
-package com.example.animal_shelet.pojo.Audit;
+package com.example.animal_shelet.pojo.Adopte.Audit;
 
 
 import lombok.AllArgsConstructor;

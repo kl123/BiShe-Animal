@@ -54,7 +54,7 @@
         <result property="updatedAt" column="ap_updatedAt"/>
     </resultMap>
 
-    <resultMap id="AuditRecordsResultMap" type="com.example.animal_shelet.pojo.Audit.AuditRecords">
+    <resultMap id="AuditRecordsResultMap" type="com.example.animal_shelet.pojo.Adopte.Audit.AuditRecords">
         <id property="id" column="id"/>
         <result property="adminId" column="admin_id"/>
         <result property="targetType" column="target_type"/>
@@ -69,10 +69,10 @@
         <association property="animalProfile" javaType="com.example.animal_shelet.pojo.Animal.AnimalProfile" resultMap="AnimalProfileResultMap"/>
     </resultMap>
 
-    <resultMap id="AuditRecords_and_usernameMap" type="com.example.animal_shelet.pojo.Audit.And.AuditRecords_and_username">
+    <resultMap id="AuditRecords_and_usernameMap" type="com.example.animal_shelet.pojo.Adopte.Audit.And.AuditRecords_and_username">
         <id property="auditRecordsId" column="id"/>
         <result property="username" column="username"/>
-        <association property="auditRecords" javaType="com.example.animal_shelet.pojo.Audit.AuditRecords">
+        <association property="auditRecords" javaType="com.example.animal_shelet.pojo.Adopte.Audit.AuditRecords">
             <id property="id" column="id"/>
             <result property="adminId" column="admin_id"/>
             <result property="targetType" column="target_type"/>

@@ -1,7 +1,7 @@
 package com.example.animal_shelet.mapper;
 
 import com.example.animal_shelet.pojo.Animal.And.Shelters_and_AnimalProfiles;
-import com.example.animal_shelet.pojo.Audit.And.AuditRecords_and_username;
+import com.example.animal_shelet.pojo.Adopte.Audit.And.AuditRecords_and_username;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

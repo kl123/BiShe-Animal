@@ -1,6 +1,6 @@
-package com.example.animal_shelet.pojo.Audit.And;
+package com.example.animal_shelet.pojo.Adopte.Audit.And;
 
-import com.example.animal_shelet.pojo.Audit.AuditRecords;
+import com.example.animal_shelet.pojo.Adopte.Audit.AuditRecords;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
