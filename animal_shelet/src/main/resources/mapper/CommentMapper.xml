@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.CommentsMapper">
+
+    <insert id="insertForumPost">
+        insert into forum_comments (user_id, content, likes, status, created_at, image_url)
+        VALUES (#{user_id}, #{content}, #{likes}, #{status}, #{created_at}, #{image_url})
+    </insert>
+    <insert id="insertForumComments">
+        insert into forum_comments (post_id, user_id, content, likes, status, created_at, image_url)
+        VALUES (#{post_id}, #{user_id}, #{content}, #{likes}, #{status}, #{created_at}, #{image_url})
+    </insert>
+    <select id="getForumPosts" resultType="com.example.animal_shelet.pojo.Comment.ForumPosts">
+        select * from forum_comments
+        ORDER BY created_at DESC
+    </select>
+</mapper>
