@@ -180,8 +180,10 @@
         WHERE ap.status = 1
         ORDER BY ap.created_at DESC
     </select>
-
-
+    <select id="getMyAdoptionApplications"
+            resultType="com.example.animal_shelet.pojo.Adopte.AdoptionApplications">
+        select * from adoption_applications where adopter_id = #{userId}
+    </select>
 
 
     <!-- 定义 resultMap -->

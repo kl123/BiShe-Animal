@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -41,6 +38,17 @@ public class AdoptersController {
         Integer animalId = result.get("animalId");
         log.info("animalId:{}", animalId);
         return adoptersService.insertAdoptionApplications(token, animalId);
+    }
+
+    /**
+     * 获取我的领养申请
+     * @param httpServletRequest
+     * @return
+     */
+    @GetMapping("/getMyAdoptionApplications")
+    public Result getMyAdoptionApplications(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("token");
+        return adoptersService.getMyAdoptionApplications(token);
     }
 
 

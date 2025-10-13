@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +21,7 @@ public class ForumPosts {
   private Integer status;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-  private String imageUrl;
+  private List<String> imageUrlList;
 
 
 }

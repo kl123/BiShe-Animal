@@ -1,5 +1,6 @@
 package com.example.animal_shelet.service;
 import com.example.animal_shelet.mapper.AnimalMapper;
+import com.example.animal_shelet.pojo.Adopte.AdoptionApplications;
 import com.example.animal_shelet.utils.jwt.JWTUtils;
 import com.example.animal_shelet.mapper.AdoptersMapper;
 import com.example.animal_shelet.pojo.result.Result;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,5 +31,12 @@ public class AdoptersService {
         // 状态更新成功，插入申请记录（同一事务内，若插入失败将整体回滚）
         adoptersMapper.insertAdoptionApplications(userId, animalId);
         return Result.success();
+    }
+
+    public Result getMyAdoptionApplications(String token) {
+        Map<String, String> tokenInfo = JWTUtils.getTokenInfo(token);
+        String userId = tokenInfo.get("userId");
+        List<AdoptionApplications>  adoptionApplications = animalMapper.getMyAdoptionApplications(userId);
+        return Result.success(adoptionApplications);
     }
 }

@@ -4,15 +4,21 @@
 <mapper namespace="com.example.animal_shelet.mapper.CommentsMapper">
 
     <insert id="insertForumPost">
-        insert into forum_comments (user_id, content, likes, status, created_at, image_url)
-        VALUES (#{user_id}, #{content}, #{likes}, #{status}, #{created_at}, #{image_url})
+        insert into forum_posts (title, content, views, likes, status, created_at, image_url , user_id)
+        values (#{forumPosts.title}, #{forumPosts.content}, #{forumPosts.views}, #{forumPosts.likes}, #{forumPosts.status}, NOW(), #{imageUrlJson} , #{forumPosts.userId})
     </insert>
     <insert id="insertForumComments">
         insert into forum_comments (post_id, user_id, content, likes, status, created_at, image_url)
-        VALUES (#{post_id}, #{user_id}, #{content}, #{likes}, #{status}, #{created_at}, #{image_url})
+        VALUES (#{postId}, #{userId}, #{content}, #{likes}, #{status}, NOW(), #{imageUrl})
     </insert>
+
+    <update id="AuditPost">
+        update forum_posts
+        set content = '该内容已经被封禁',status = 1
+        where id = #{postId}
+    </update>
     <select id="getForumPosts" resultType="com.example.animal_shelet.pojo.Comment.ForumPosts">
-        select * from forum_comments
+        select * from forum_posts
         ORDER BY created_at DESC
     </select>
 </mapper>

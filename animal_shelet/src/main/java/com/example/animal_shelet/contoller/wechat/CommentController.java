@@ -4,12 +4,17 @@ import com.example.animal_shelet.pojo.Comment.ForumComments;
 import com.example.animal_shelet.pojo.Comment.ForumPosts;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.CommentsService;
+import com.example.animal_shelet.utils.jwt.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("CommentController")
+import java.util.Map;
+
+@RestController("CommentControllerWechat")
 @RequestMapping("/wechat/Comment")
+@Slf4j
 public class CommentController {
     /**
      * 帖子服务控制/wechat

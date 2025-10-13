@@ -41,4 +41,8 @@ public class AuditService {
             return Result.error("权限不足");
         }
     }
+
+    public void AuditRecordsAdd(String targetId, String userId, String reason, String targetType, String action) {
+        auditMapper.AuditRecordsAdd(targetId, userId, reason,targetType,action);
+    }
 }

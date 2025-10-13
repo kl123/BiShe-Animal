@@ -20,7 +20,8 @@ public class CommentsService {
         Map<String, String> tokenInfo = JWTUtils.getTokenInfo(token);
         String userId = tokenInfo.get("userId");
         forumPosts.setUserId(Integer.parseInt(userId));
-        commentsMapper.insertForumPost(forumPosts);
+        String imageUrlJson = forumPosts.getImageUrlList().toString();
+        commentsMapper.insertForumPost(forumPosts,imageUrlJson);
         return Result.success();
 
     }
@@ -36,5 +37,9 @@ public class CommentsService {
         forumComments.setUserId(Integer.parseInt(userId));
         commentsMapper.insertForumComments(forumComments);
         return Result.success();
+    }
+
+    public void AuditPost(String postId) {
+        commentsMapper.AuditPost(postId);
     }
 }

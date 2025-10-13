@@ -12,4 +12,6 @@ public interface AuditMapper {
     List<Shelters_and_AnimalProfiles> getApplicationInformation(@Param("userId") String userId);
 
     List<AuditRecords_and_username> getAllAuditInfoList();
+
+    void AuditRecordsAdd(@Param("targetId") String targetId, @Param("adminId") String userId, @Param("reason") String reason, @Param("targetType") String targetType, @Param("action") String action);
 }

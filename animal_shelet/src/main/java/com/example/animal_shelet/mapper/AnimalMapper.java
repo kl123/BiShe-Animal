@@ -1,5 +1,6 @@
 package com.example.animal_shelet.mapper;
 
+import com.example.animal_shelet.pojo.Adopte.AdoptionApplications;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.Animal.Shelter;
@@ -44,4 +45,7 @@ public interface AnimalMapper {
      * 获取所有可领养的动物（状态为1）
      */
     List<AnimalProfile> getAvailableAnimals();
+
+
+    List<AdoptionApplications> getMyAdoptionApplications(String userId);
 }

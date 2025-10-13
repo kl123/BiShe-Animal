@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.animal_shelet.mapper.AuditMapper">
+    <insert id="AuditRecordsAdd">
+        insert into audit_records(admin_id, target_type, target_id, action, reason, audit_time)
+        values(#{adminId}, #{targetType}, #{targetId}, #{action}, #{reason}, NOW())
+    </insert>
     <select id="getApplicationInformation" resultMap="SheltersAndAnimalProfilesResultMap">
         select
             s.id as s_id, s.shelter_name as s_shelter_name, s.contact_person as s_contact_person,
