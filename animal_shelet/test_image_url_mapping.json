@@ -1,0 +1,6 @@
+{
+  "description": "测试获取帖子接口，验证数据库中字符串格式的image_url是否能正确映射为List<String>",
+  "test_endpoint": "GET /wechat/Comment/getPosts",
+  "expected_behavior": "数据库中的image_url字段格式如 '[https://loremflickr.com/400/400?lock=4634158608751168]' 应该被正确解析为 List<String> 类型",
+  "test_command": "curl -X GET http://localhost:8081/wechat/Comment/getPosts -H \"token: your_jwt_token_here\""
+}

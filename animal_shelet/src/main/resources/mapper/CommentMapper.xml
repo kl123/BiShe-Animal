@@ -17,16 +17,29 @@
         set content = '该内容已经被封禁',status = 1
         where id = #{postId}
     </update>
-    <select id="getForumPosts" resultType="com.example.animal_shelet.pojo.Comment.ForumPosts">
+    <select id="getForumPosts" resultMap="ForumPostsResultMap">
         select * from forum_posts
         ORDER BY created_at DESC
     </select>
+    
+    <!-- 定义ForumPosts的ResultMap，指定imageUrlList字段使用自定义TypeHandler -->
+    <resultMap id="ForumPostsResultMap" type="com.example.animal_shelet.pojo.Comment.ForumPosts">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="imageUrlList" column="image_url" typeHandler="com.example.animal_shelet.config.StringListTypeHandler"/>
+    </resultMap>
     <select id="getCommentByPostId" resultType="com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser">
         select *,
                (select username from users where id = fc.user_id)
         from forum_comments fc
         where post_id = #{postId}
         ORDER BY fc.created_at DESC
-
     </select>
 </mapper>
