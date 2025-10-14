@@ -1,6 +1,7 @@
 package com.example.animal_shelet.service;
 
 import com.example.animal_shelet.mapper.CommentsMapper;
+import com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser;
 import com.example.animal_shelet.pojo.Comment.ForumComments;
 import com.example.animal_shelet.pojo.Comment.ForumPosts;
 import com.example.animal_shelet.pojo.result.Result;
@@ -41,5 +42,10 @@ public class CommentsService {
 
     public void AuditPost(String postId) {
         commentsMapper.AuditPost(postId);
+    }
+
+    public Result getCommentByPostId(String postId, String token) {
+        List<ForumCommentsAndUser> forumCommentsAndUserList = commentsMapper.getCommentByPostId(postId);
+        return Result.success(forumCommentsAndUserList);
     }
 }

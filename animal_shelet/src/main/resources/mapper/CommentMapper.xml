@@ -8,8 +8,8 @@
         values (#{forumPosts.title}, #{forumPosts.content}, #{forumPosts.views}, #{forumPosts.likes}, #{forumPosts.status}, NOW(), #{imageUrlJson} , #{forumPosts.userId})
     </insert>
     <insert id="insertForumComments">
-        insert into forum_comments (post_id, user_id, content, likes, status, created_at, image_url)
-        VALUES (#{postId}, #{userId}, #{content}, #{likes}, #{status}, NOW(), #{imageUrl})
+        insert into forum_comments (post_id, user_id, content, likes, status, created_at)
+        VALUES (#{postId}, #{userId}, #{content}, #{likes}, #{status}, NOW())
     </insert>
 
     <update id="AuditPost">
@@ -20,5 +20,13 @@
     <select id="getForumPosts" resultType="com.example.animal_shelet.pojo.Comment.ForumPosts">
         select * from forum_posts
         ORDER BY created_at DESC
+    </select>
+    <select id="getCommentByPostId" resultType="com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser">
+        select *,
+               (select username from users where id = fc.user_id)
+        from forum_comments fc
+        where post_id = #{postId}
+        ORDER BY fc.created_at DESC
+
     </select>
 </mapper>

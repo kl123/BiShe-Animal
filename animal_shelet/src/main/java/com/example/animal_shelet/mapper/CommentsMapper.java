@@ -1,5 +1,6 @@
 package com.example.animal_shelet.mapper;
 
+import com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser;
 import com.example.animal_shelet.pojo.Comment.ForumComments;
 import com.example.animal_shelet.pojo.Comment.ForumPosts;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,4 +17,6 @@ public interface CommentsMapper {
     void insertForumComments(ForumComments forumComments);
 
     void AuditPost(String postId);
+
+    List<ForumCommentsAndUser> getCommentByPostId(String postId);
 }

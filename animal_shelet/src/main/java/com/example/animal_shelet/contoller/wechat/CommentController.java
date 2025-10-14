@@ -57,6 +57,17 @@ public class CommentController {
         String token = httpServletRequest.getHeader("token");
         return commentsService.PublishReview(forumComments,token);
     }
-
+    /**
+     * 获取评论
+     * @param result
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping("/getCommentByPostId")
+    public Result getCommentByPostId(@RequestBody Map<String,Object> result, HttpServletRequest httpServletRequest){
+        String postId = String.valueOf(result.get("postId"));
+        String token = httpServletRequest.getHeader("token");
+        return commentsService.getCommentByPostId(postId,token);
+    }
 
 }
