@@ -28,6 +28,8 @@ public class ForumPosts {
   // 使用自定义TypeHandler处理数据库字符串到List<String>的映射
   private List<String> imageUrlList;
 
+  private String username;
+
 
 
 }

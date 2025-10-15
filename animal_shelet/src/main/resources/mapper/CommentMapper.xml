@@ -18,7 +18,9 @@
         where id = #{postId}
     </update>
     <select id="getForumPosts" resultMap="ForumPostsResultMap">
-        select * from forum_posts
+        select *,
+               (select username from users where forum_posts.user_id = users.id) as username
+               from forum_posts
         ORDER BY created_at DESC
     </select>
     
@@ -33,11 +35,25 @@
         <result property="status" column="status"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
+        <result property="username" column="username"/>
         <result property="imageUrlList" column="image_url" typeHandler="com.example.animal_shelet.config.StringListTypeHandler"/>
     </resultMap>
-    <select id="getCommentByPostId" resultType="com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser">
-        select *,
-               (select username from users where id = fc.user_id)
+    <!-- 定义ForumCommentsAndUser的ResultMap -->
+    <resultMap id="ForumCommentsAndUserResultMap" type="com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="likes" column="likes"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="username" column="username"/>
+    </resultMap>
+    
+    <select id="getCommentByPostId" resultMap="ForumCommentsAndUserResultMap">
+        select fc.*,
+               (select username from users where id = fc.user_id) as username
         from forum_comments fc
         where post_id = #{postId}
         ORDER BY fc.created_at DESC
