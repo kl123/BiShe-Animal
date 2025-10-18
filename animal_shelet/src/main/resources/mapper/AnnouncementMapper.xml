@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.AnnouncementMapper">
+
+    <!-- 公告ResultMap -->
+    <resultMap id="AnnouncementResultMap" type="com.example.animal_shelet.pojo.Announcement.Announcement">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="content" column="content"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="creatorId" column="creator_id"/>
+    </resultMap>
+
+    <!-- 新增公告 -->
+    <insert id="insertAnnouncement" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO announcements (name, content, image_url, status, created_at, updated_at, creator_id)
+        VALUES (#{name}, #{content}, #{imageUrl}, #{status}, NOW(), NOW(), #{creatorId})
+    </insert>
+
+    <!-- 根据ID删除公告 -->
+    <delete id="deleteAnnouncementById">
+        DELETE FROM announcements WHERE id = #{id}
+    </delete>
+
+    <!-- 更新公告 -->
+    <update id="updateAnnouncement">
+        UPDATE announcements 
+        SET name = #{name},
+            content = #{content},
+            image_url = #{imageUrl},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID查询公告 -->
+    <select id="selectAnnouncementById" resultMap="AnnouncementResultMap">
+        SELECT * FROM announcements WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有公告（按创建时间倒序） -->
+    <select id="selectAllAnnouncements" resultMap="AnnouncementResultMap">
+        SELECT * FROM announcements ORDER BY created_at DESC
+    </select>
+
+    <!-- 查询上架的公告（按创建时间倒序） -->
+    <select id="selectActiveAnnouncements" resultMap="AnnouncementResultMap">
+        SELECT * FROM announcements WHERE status = 1 ORDER BY created_at DESC
+    </select>
+
+    <!-- 统计上架的公告数量 -->
+    <select id="countActiveAnnouncements" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM announcements WHERE status = 1
+    </select>
+
+    <!-- 批量更新公告状态 -->
+    <update id="batchUpdateAnnouncementStatus">
+        UPDATE announcements 
+        SET status = #{status}, updated_at = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

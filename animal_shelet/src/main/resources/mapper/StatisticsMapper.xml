@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.StatisticsMapper">
+
+    <!-- 获取平台待领养的宠物个数 -->
+    <select id="getAvailablePetsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM animal_profiles 
+        WHERE status = 1
+    </select>
+    
+    <!-- 获取平台已经完成对接领养个数 -->
+    <select id="getCompletedAdoptionsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM adoption_applications 
+        WHERE status = 3
+    </select>
+    
+    <!-- 获取平台月审批量数 -->
+    <select id="getMonthlyApprovalCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM audit_records 
+        WHERE YEAR(audit_time) = YEAR(NOW()) 
+        AND MONTH(audit_time) = MONTH(NOW())
+    </select>
+    
+    <!-- 获取平台入住流浪所数 -->
+    <select id="getSheltersCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM shelters
+    </select>
+    
+    <!-- 获取平台用户评论数 -->
+    <select id="getUserCommentsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM forum_comments
+    </select>
+
+</mapper>
