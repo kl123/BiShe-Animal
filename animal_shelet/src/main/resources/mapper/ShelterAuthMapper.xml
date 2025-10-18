@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.ShelterAuthMapper">
+
+    <!-- 流浪所认证申请ResultMap -->
+    <resultMap id="ShelterAuthResponseResultMap" type="com.example.animal_shelet.pojo.ShelterAuth.ShelterAuthResponse">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="shelterName" column="shelter_name"/>
+        <result property="contactPerson" column="contact_person"/>
+        <result property="businessLicense" column="business_license"/>
+        <result property="qualificationFile" column="qualification_file"/>
+        <result property="status" column="status"/>
+        <result property="statusStr" column="status_str"/>
+        <result property="description" column="description"/>
+        <result property="auditReason" column="audit_reason"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="auditTime" column="audit_time"/>
+    </resultMap>
+
+    <!-- 提交流浪所认证申请 -->
+    <insert id="insertShelterAuthApplication">
+        INSERT INTO shelter_auth_applications 
+        (user_id, shelter_name, contact_person, business_license, qualification_file, description, status, created_at)
+        VALUES 
+        (#{userId}, #{request.shelterName}, #{request.contactPerson}, 
+         #{request.businessLicense}, #{request.qualificationFile}, #{request.description}, 0, NOW())
+    </insert>
+    
+    <!-- 检查用户是否已有待审核的申请 -->
+    <select id="countPendingApplicationsByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM shelter_auth_applications 
+        WHERE user_id = #{userId} 
+        AND status = 0
+    </select>
+    
+    <!-- 检查用户是否已经是流浪所账号 -->
+    <select id="countShelterByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM shelters 
+        WHERE user_id = #{userId}
+    </select>
+    
+    <!-- 根据用户ID获取认证申请记录 -->
+    <select id="getShelterAuthApplicationsByUserId" resultMap="ShelterAuthResponseResultMap">
+        SELECT 
+            id, user_id, shelter_name, contact_person, business_license, 
+            qualification_file, status, description, audit_reason, created_at, audit_time,
+            CASE 
+                WHEN status = 0 THEN '待审核'
+                WHEN status = 1 THEN '审核通过'
+                WHEN status = 2 THEN '审核不通过'
+                ELSE '未知状态'
+            END AS status_str
+        FROM shelter_auth_applications 
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 根据申请ID获取认证申请详情 -->
+    <select id="getShelterAuthApplicationById" resultMap="ShelterAuthResponseResultMap">
+        SELECT 
+            id, user_id, shelter_name, contact_person, business_license, 
+            qualification_file, status, description, audit_reason, created_at, audit_time,
+            CASE 
+                WHEN status = 0 THEN '待审核'
+                WHEN status = 1 THEN '审核通过'
+                WHEN status = 2 THEN '审核不通过'
+                ELSE '未知状态'
+            END AS status_str
+        FROM shelter_auth_applications 
+        WHERE id = #{applicationId}
+    </select>
+    
+    <!-- 获取所有待审核的认证申请（管理员用） -->
+    <select id="getAllPendingApplications" resultMap="ShelterAuthResponseResultMap">
+        SELECT 
+            saa.id, saa.user_id, saa.shelter_name, saa.contact_person, 
+            saa.business_license, saa.qualification_file, saa.status, 
+            saa.description, saa.audit_reason, saa.created_at, saa.audit_time,
+            u.username,
+            CASE 
+                WHEN saa.status = 0 THEN '待审核'
+                WHEN saa.status = 1 THEN '审核通过'
+                WHEN saa.status = 2 THEN '审核不通过'
+                ELSE '未知状态'
+            END AS status_str
+        FROM shelter_auth_applications saa
+        JOIN users u ON saa.user_id = u.id
+        WHERE saa.status = 0
+        ORDER BY saa.created_at ASC
+    </select>
+    
+    <!-- 更新申请状态（审核用） -->
+    <update id="updateApplicationStatus">
+        UPDATE shelter_auth_applications 
+        SET status = #{status}, 
+            audit_reason = #{auditReason}, 
+            audit_time = NOW()
+        WHERE id = #{applicationId}
+    </update>
+    
+    <!-- 审核通过后创建流浪所记录 -->
+    <insert id="createShelterFromApplication">
+        INSERT INTO shelters (shelter_name, contact_person, business_license, qualification_file, user_id)
+        SELECT shelter_name, contact_person, business_license, qualification_file, user_id
+        FROM shelter_auth_applications 
+        WHERE id = #{applicationId} AND status = 1
+    </insert>
+
+</mapper>

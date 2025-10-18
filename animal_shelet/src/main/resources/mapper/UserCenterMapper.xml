@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.animal_shelet.mapper.UserCenterMapper">
+
+    <!-- 用户基本信息ResultMap -->
+    <resultMap id="UserProfileResultMap" type="com.example.animal_shelet.pojo.UserCenter.UserProfile">
+        <result property="userId" column="id"/>
+        <result property="username" column="username"/>
+    </resultMap>
+
+    <!-- 获取用户基本信息 -->
+    <select id="getUserBasicInfo" resultMap="UserProfileResultMap">
+        SELECT id, username 
+        FROM users 
+        WHERE id = #{userId}
+    </select>
+    
+    <!-- 获取用户领养宠物数量 -->
+    <select id="getUserAdoptedPetsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM adoption_applications 
+        WHERE adopter_id = #{userId} 
+        AND status = 3
+    </select>
+    
+    <!-- 检查用户是否为流浪所账号并获取流浪所名称 -->
+    <select id="getShelterNameByUserId" resultType="java.lang.String">
+        SELECT shelter_name 
+        FROM shelters 
+        WHERE id = #{userId}
+    </select>
+    
+    <!-- 获取流浪所已售出动物数量 -->
+    <select id="getShelterSoldAnimalsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM animal_profiles 
+        WHERE shelter_id = #{userId} 
+        AND status = 2
+    </select>
+    
+    <!-- 获取流浪所正在售出动物数量 -->
+    <select id="getShelterAvailableAnimalsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM animal_profiles 
+        WHERE shelter_id = #{userId} 
+        AND status = 1
+    </select>
+    
+    <!-- 获取用户发布帖子数量 -->
+    <select id="getUserPostsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM forum_posts 
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>
