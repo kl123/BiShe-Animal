@@ -72,4 +72,6 @@ public interface ShelterAuthMapper {
      * @return 影响行数
      */
     int createShelterFromApplication(@Param("applicationId") Integer applicationId);
+
+    void updateUserRoleId(@Param("i") int i, @Param("userId") Integer userId);
 }

@@ -23,8 +23,8 @@
     <insert id="insertShelterAuthApplication">
         INSERT INTO shelter_auth_applications 
         (user_id, shelter_name, contact_person, business_license, qualification_file, description, status, created_at)
-        VALUES 
-        (#{userId}, #{request.shelterName}, #{request.contactPerson}, 
+        VALUES
+        (#{userId}, #{request.shelterName}, #{request.contactPerson},
          #{request.businessLicense}, #{request.qualificationFile}, #{request.description}, 0, NOW())
     </insert>
     
@@ -95,13 +95,18 @@
     
     <!-- 更新申请状态（审核用） -->
     <update id="updateApplicationStatus">
-        UPDATE shelter_auth_applications 
+        UPDATE shelter_auth_applications
         SET status = #{status}, 
             audit_reason = #{auditReason}, 
             audit_time = NOW()
         WHERE id = #{applicationId}
     </update>
-    
+    <update id="updateUserRoleId">
+        UPDATE users
+        SET role_id = #{i}
+        WHERE id = #{userId}
+    </update>
+
     <!-- 审核通过后创建流浪所记录 -->
     <insert id="createShelterFromApplication">
         INSERT INTO shelters (shelter_name, contact_person, business_license, qualification_file, user_id)
