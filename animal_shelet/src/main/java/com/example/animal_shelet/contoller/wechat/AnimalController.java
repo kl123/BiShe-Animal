@@ -2,6 +2,7 @@ package com.example.animal_shelet.contoller.wechat;
 
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.AnimalService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +19,13 @@ public class AnimalController {
 
     /**
      * 核验资格
-     * @param Data
      * @return
      */
-    @PostMapping ("/check")
-    public Result check(@RequestBody Map<String, Object> Data){
-        //获取
-        int userId = (int)Data.get("userid");
-        int result = animalService.check(userId);
+    @GetMapping ("/check")
+    public Result check(HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        Map<String,String> map = com.example.animal_shelet.utils.jwt.JWTUtils.getTokenInfo(token);
+        int result = animalService.check(Integer.parseInt(map.get("userId")));
         System.out.println("核验资格:"+result);
         if (result==1){
             return Result.success("拥有发布资格");
