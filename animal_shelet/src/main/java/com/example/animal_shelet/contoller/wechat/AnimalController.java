@@ -90,6 +90,17 @@ public class AnimalController {
         return animalService.getAvailableAnimals();
     }
 
+    /**
+     * 获取我发布的动物记录（流浪所用户）
+     * @param request
+     * @return
+     */
+    @GetMapping("/getMyPublishedAnimals")
+    public Result getMyPublishedAnimals(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        return animalService.getMyPublishedAnimals(token);
+    }
+
 
 
 }

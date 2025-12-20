@@ -44,6 +44,16 @@ public class CommentsService {
         commentsMapper.AuditPost(postId);
     }
 
+    public Result likePost(Integer postId) {
+        commentsMapper.likePost(postId);
+        return Result.success();
+    }
+
+    public Result unlikePost(Integer postId) {
+        commentsMapper.unlikePost(postId);
+        return Result.success();
+    }
+
     public Result getCommentByPostId(String postId, String token) {
         List<ForumCommentsAndUser> forumCommentsAndUserList = commentsMapper.getCommentByPostId(postId);
         return Result.success(forumCommentsAndUserList);

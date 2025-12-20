@@ -30,6 +30,7 @@ public class ForumPosts {
 
   private String username;
 
-
+  // 扩展字段：评论数
+  private Integer commentsCount;
 
 }

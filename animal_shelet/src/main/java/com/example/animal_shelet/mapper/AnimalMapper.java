@@ -56,6 +56,16 @@ public interface AnimalMapper {
      */
     List<AnimalProfile> getAvailableAnimals();
 
+    /**
+     * 根据用户ID获取其关联流浪所发布的动物列表
+     */
+    List<AnimalProfile> getAnimalsByUserId(@Param("userId") int userId);
+
 
     List<AdoptionApplications> getMyAdoptionApplications(String userId);
+
+    /**
+     * 获取所有领养申请（管理员用）
+     */
+    List<AdoptionApplications> getAllAdoptionApplications();
 }

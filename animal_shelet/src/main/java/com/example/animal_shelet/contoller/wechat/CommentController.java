@@ -70,4 +70,26 @@ public class CommentController {
         return commentsService.getCommentByPostId(postId,token);
     }
 
+    /**
+     * 点赞帖子
+     * @param result
+     * @return
+     */
+    @PostMapping("/likePost")
+    public Result likePost(@RequestBody Map<String,Object> result){
+        Integer postId = (Integer) result.get("postId");
+        return commentsService.likePost(postId);
+    }
+
+    /**
+     * 取消点赞帖子
+     * @param result
+     * @return
+     */
+    @PostMapping("/unlikePost")
+    public Result unlikePost(@RequestBody Map<String,Object> result){
+        Integer postId = (Integer) result.get("postId");
+        return commentsService.unlikePost(postId);
+    }
+
 }

@@ -19,4 +19,9 @@ public class AdoptionApplications {
   private String feedback;
   private LocalDateTime completionDate;
 
+  // 扩展字段，用于展示
+  private String animalName;
+  private String animalImageUrl;
+  private String shelterName;
+
 }

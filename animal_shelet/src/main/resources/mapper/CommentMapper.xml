@@ -17,9 +17,23 @@
         set content = '该内容已经被封禁',status = 1
         where id = #{postId}
     </update>
+
+    <update id="likePost">
+        UPDATE forum_posts
+        SET likes = IFNULL(likes, 0) + 1
+        WHERE id = #{postId}
+    </update>
+
+    <update id="unlikePost">
+        UPDATE forum_posts
+        SET likes = CASE WHEN likes > 0 THEN likes - 1 ELSE 0 END
+        WHERE id = #{postId}
+    </update>
+
     <select id="getForumPosts" resultMap="ForumPostsResultMap">
         select *,
-               (select username from users where forum_posts.user_id = users.id) as username
+               (select username from users where forum_posts.user_id = users.id) as username,
+               (select count(*) from forum_comments where forum_comments.post_id = forum_posts.id) as commentsCount
                from forum_posts
         ORDER BY created_at DESC
     </select>
@@ -37,6 +51,7 @@
         <result property="updatedAt" column="updated_at"/>
         <result property="username" column="username"/>
         <result property="imageUrlList" column="image_url" typeHandler="com.example.animal_shelet.config.StringListTypeHandler"/>
+        <result property="commentsCount" column="commentsCount"/>
     </resultMap>
     <!-- 定义ForumCommentsAndUser的ResultMap -->
     <resultMap id="ForumCommentsAndUserResultMap" type="com.example.animal_shelet.pojo.Comment.And.ForumCommentsAndUser">

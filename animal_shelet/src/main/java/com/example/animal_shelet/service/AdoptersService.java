@@ -42,7 +42,17 @@ public class AdoptersService {
             return Result.error("未登录或Token无效");
         }
         String userId = tokenInfo.get("userId");
-        List<AdoptionApplications>  adoptionApplications = animalMapper.getMyAdoptionApplications(userId);
+        String roleId = tokenInfo.get("roleId");
+
+        List<AdoptionApplications> adoptionApplications;
+        if ("1".equals(roleId)) {
+            // 管理员：查看所有申请
+            adoptionApplications = animalMapper.getAllAdoptionApplications();
+        } else {
+            // 普通用户：查看自己的申请
+            adoptionApplications = animalMapper.getMyAdoptionApplications(userId);
+        }
+        
         return Result.success(adoptionApplications);
     }
 }

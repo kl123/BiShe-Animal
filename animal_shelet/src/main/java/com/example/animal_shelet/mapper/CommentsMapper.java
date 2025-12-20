@@ -18,5 +18,9 @@ public interface CommentsMapper {
 
     void AuditPost(String postId);
 
+    void likePost(Integer postId);
+
+    void unlikePost(Integer postId);
+
     List<ForumCommentsAndUser> getCommentByPostId(String postId);
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AnimalService {
@@ -114,5 +115,16 @@ public class AnimalService {
 
     public Result getAvailableAnimals() {
         return Result.success(animalMapper.getAvailableAnimals());
+    }
+
+    public Result getMyPublishedAnimals(String token) {
+        Map<String, String> tokenInfo = JWTUtils.getTokenInfo(token);
+        if (tokenInfo == null || !tokenInfo.containsKey("userId")) {
+            return Result.error("未登录或Token无效");
+        }
+        String userId = tokenInfo.get("userId");
+        // 获取该用户（流浪所管理员）发布的动物列表
+        List<AnimalProfile> animals = animalMapper.getAnimalsByUserId(Integer.parseInt(userId));
+        return Result.success(animals);
     }
 }
