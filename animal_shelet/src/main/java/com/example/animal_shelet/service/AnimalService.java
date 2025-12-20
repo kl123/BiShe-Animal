@@ -2,6 +2,7 @@ package com.example.animal_shelet.service;
 
 import com.example.animal_shelet.mapper.AnimalMapper;
 import com.example.animal_shelet.pojo.Animal.And.AuditRecords_and_AnimalProfile;
+import com.example.animal_shelet.pojo.Animal.AnimalInsertDTO;
 import com.example.animal_shelet.pojo.Animal.AnimalProfile;
 import com.example.animal_shelet.pojo.Animal.AuditRecords;
 import com.example.animal_shelet.pojo.result.Result;
@@ -48,6 +49,28 @@ public class AnimalService {
         }
     }
 
+    public Integer getShelterIdByUserId(int userId) {
+        List<Shelter> shelters = animalMapper.selectShelter(userId);
+        if (shelters != null && !shelters.isEmpty()) {
+            return shelters.get(0).getId();
+        }
+        return null;
+    }
+
+    public int insertAnimalProfile(AnimalInsertDTO dto) {
+        return animalMapper.insertAnimalProfile(
+                dto.getShelterId() != null ? dto.getShelterId() : 0,
+                dto.getAnimalName(),
+                dto.getSpecies(),
+                dto.getBreed(),
+                dto.getGender() != null ? dto.getGender() : 0, // Default to 0 if null
+                dto.getAge() != null ? dto.getAge() : 0, // Default to 0 if null
+                dto.getHealthStatus(),
+                dto.getDescription(),
+                dto.getImgUrl()
+        );
+    }
+
     public int insertAnimalProfile(int shelterId, String animalName, String species, String breed, int gender, int age, String healthStatus, String description, String imgUrl) {
         int result = animalMapper.insertAnimalProfile(shelterId,animalName,species,breed,gender,age,healthStatus,description,imgUrl);
         System.out.println("发布申请插入结果"+result);
@@ -87,5 +110,9 @@ public class AnimalService {
             auditRecords.setAction(0);
         }
         auditRecords.setTargetType(4);
+    }
+
+    public Result getAvailableAnimals() {
+        return Result.success(animalMapper.getAvailableAnimals());
     }
 }

@@ -19,7 +19,17 @@ public interface AnimalMapper {
 
     List<Shelter> selectShelter(@Param("userId")int userId);
 
-    int insertAnimalProfile(int shelterId, String animalName, String species, String breed, int gender, int age, String healthStatus, String description, String imgUrl);
+    int insertAnimalProfile(
+        @Param("shelterId") int shelterId, 
+        @Param("animalname") String animalName, 
+        @Param("species") String species, 
+        @Param("breed") String breed, 
+        @Param("gender") int gender, 
+        @Param("age") int age, 
+        @Param("healthStatus") String healthStatus, 
+        @Param("description") String description, 
+        @Param("imageUrl") String imgUrl
+    );
 
     void updateAnimalProfiles(AnimalProfile animalProfile);
 

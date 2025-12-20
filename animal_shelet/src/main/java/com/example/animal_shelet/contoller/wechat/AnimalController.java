@@ -1,5 +1,6 @@
 package com.example.animal_shelet.contoller.wechat;
 
+import com.example.animal_shelet.pojo.Animal.AnimalInsertDTO;
 import com.example.animal_shelet.pojo.result.Result;
 import com.example.animal_shelet.service.AnimalService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,23 +37,41 @@ public class AnimalController {
 
     /**
      * 插入动物信息
-     * @param Data
+     * @param animalInsertDTO
      * @return
      */
     @RequestMapping("/insert_infor")
-    public Result insertAnimal_record(@RequestBody Map<String, Object> Data){
-        int shelterId = (int)Data.get("shelterId");
-        String Animalname = (String) Data.get("Animalname");
-        String species = (String) Data.get("species");
-        String breed = (String)Data.get("breed");
-        int gender = (int)Data.get("gender");
-        int age = (int)Data.get("age");
-        String healthStatus = (String)Data.get("healthStatus");
-        String description = (String) Data.get("description");
-        String imgUrl = (String) Data.get("imgUrl");
+    public Result insertAnimal_record(@RequestBody AnimalInsertDTO animalInsertDTO, HttpServletRequest request){
+        // 强制从token获取shelterId，忽略前端传入的shelterId
+        String token = request.getHeader("token");
+        if (token == null || token.isEmpty()) {
+            return Result.error("发布失败: 未登录或Token无效");
+        }
+
+        try {
+            Map<String, String> tokenInfo = com.example.animal_shelet.utils.jwt.JWTUtils.getTokenInfo(token);
+            if (tokenInfo != null && tokenInfo.containsKey("userId")) {
+                int userId = Integer.parseInt(tokenInfo.get("userId"));
+                
+                // 查询用户关联的流浪所ID
+                Integer shelterId = animalService.getShelterIdByUserId(userId);
+                
+                if (shelterId == null) {
+                    return Result.error("发布失败: 当前用户未绑定任何流浪所，无权发布");
+                }
+                
+                // 强制设置 shelterId
+                animalInsertDTO.setShelterId(shelterId);
+            } else {
+                return Result.error("发布失败: Token信息无法解析");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("发布失败: 系统异常 - " + e.getMessage());
+        }
 
         //进行插入
-        int result = animalService.insertAnimalProfile(shelterId,Animalname,species,breed,gender,age,healthStatus,description,imgUrl);
+        int result = animalService.insertAnimalProfile(animalInsertDTO);
 
         //判断
         if (result == 1){
@@ -60,6 +79,15 @@ public class AnimalController {
         }else {
             return Result.error("插入失败");
         }
+    }
+
+    /**
+     * 获取所有可领养的动物信息
+     * @return
+     */
+    @GetMapping("/getAvailableAnimals")
+    public Result getAvailableAnimals(){
+        return animalService.getAvailableAnimals();
     }
 
 

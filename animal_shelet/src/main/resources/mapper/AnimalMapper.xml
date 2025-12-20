@@ -103,7 +103,7 @@
     </select>
     <select id="selectShelter" resultType="com.example.animal_shelet.pojo.Animal.Shelter">
         SELECT * FROM `shelters` WHERE
-            id = #{userId}
+            user_id = #{userId}
     </select>
 
     <select id="getPageAnimals_NotNull" resultMap="AnimalProfileResultMap">

@@ -37,6 +37,8 @@ public class AdoptersController {
         log.info("result:{}",result);
         Integer animalId = result.get("animalId");
         log.info("animalId:{}", animalId);
+        
+        // 强制使用token进行身份验证
         return adoptersService.insertAdoptionApplications(token, animalId);
     }
 

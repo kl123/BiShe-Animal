@@ -21,6 +21,9 @@ public class AdoptersService {
     @Transactional(rollbackFor = Exception.class)
     public Result insertAdoptionApplications(String token, Integer animalId) {
         Map<String, String> tokenInfo = JWTUtils.getTokenInfo(token);
+        if (tokenInfo == null || !tokenInfo.containsKey("userId")) {
+            return Result.error("未登录或Token无效");
+        }
         String userId = tokenInfo.get("userId");
         // 乐观锁：尝试将状态从可领养(1)更新为已领养(2)
         int updated = animalMapper.tryUpdateAnimalProfilesStatus(1, 2, animalId);
@@ -35,6 +38,9 @@ public class AdoptersService {
 
     public Result getMyAdoptionApplications(String token) {
         Map<String, String> tokenInfo = JWTUtils.getTokenInfo(token);
+        if (tokenInfo == null || !tokenInfo.containsKey("userId")) {
+            return Result.error("未登录或Token无效");
+        }
         String userId = tokenInfo.get("userId");
         List<AdoptionApplications>  adoptionApplications = animalMapper.getMyAdoptionApplications(userId);
         return Result.success(adoptionApplications);
