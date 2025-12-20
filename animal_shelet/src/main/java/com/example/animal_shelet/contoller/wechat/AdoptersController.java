@@ -36,6 +36,12 @@ public class AdoptersController {
         String token = httpServletRequest.getHeader("token");
         log.info("result:{}",result);
         Integer animalId = result.get("animalId");
+        if (animalId == null) {
+            animalId = result.get("AnimalId"); // 兼容首字母大写
+        }
+        if (animalId == null) {
+            return Result.error("参数animalId不能为空");
+        }
         log.info("animalId:{}", animalId);
         
         // 强制使用token进行身份验证
